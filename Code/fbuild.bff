@@ -4,8 +4,10 @@
 ;-------------------------------------------------------------------------------
 ; Windows Platform
 ;-------------------------------------------------------------------------------
-.VSBasePath         = 'C:\Program Files (x86)\Microsoft Visual Studio 12.0'
+.VSBasePath         = 'D:\Program Files (x86)\Microsoft Visual Studio 14.0'
 .WindowsSDKBasePath = 'C:\Program Files (x86)\Windows Kits\8.1'
+.Windows10SDKPath = 'C:\Program Files (x86)\Windows Kits\10'
+.Windows10SDKVer = '10.0.14393.0'
 .ClangBasePath      = 'C:\Program Files\LLVM'
 
 ;-------------------------------------------------------------------------------
@@ -56,19 +58,17 @@ Compiler( 'Compiler-x64' )
     .Root       = '$VSBasePath$\VC\bin'
     .Executable = '$Root$\x86_amd64\cl.exe'
     .ExtraFiles = { '$Root$\x86_amd64\c1.dll'
-                    '$Root$\x86_amd64\c1ast.dll',
                     '$Root$\x86_amd64\c1xx.dll',
-                    '$Root$\x86_amd64\c1xxast.dll',
                     '$Root$\x86_amd64\c2.dll',
                     '$Root$\x86_amd64\1033\clui.dll'
-                    '$Root$\msobj120.dll'
-                    '$Root$\mspdb120.dll'
+                    '$Root$\msobj140.dll'
+                    '$Root$\mspdb140.dll'
                     '$Root$\mspdbsrv.exe'
                     '$Root$\mspdbcore.dll'
-                    '$Root$\mspft120.dll'
-                    '$VSBasePath$\VC\redist\x86\Microsoft.VC120.CRT\msvcp120.dll'
-                    '$VSBasePath$\VC\redist\x86\Microsoft.VC120.CRT\msvcr120.dll'
-                    '$VSBasePath$\VC\redist\x86\Microsoft.VC120.CRT\vccorlib120.dll'
+                    '$Root$\mspft140.dll'
+                    '$VSBasePath$\VC\redist\x86\Microsoft.VC140.CRT\msvcp140.dll'
+                    '$VSBasePath$\VC\redist\x86\Microsoft.VC140.CRT\vcruntime140.dll'
+                    '$VSBasePath$\VC\redist\x86\Microsoft.VC140.CRT\vccorlib140.dll'
                   }
 }
 Compiler( 'Compiler-x86Clang' )
@@ -113,8 +113,8 @@ Compiler( 'Compiler-x64-OSX' )
     .PCHOptions             = .CompilerOptions
                             + ' /Fp"%2" /Fo"%3"'
     .CompilerOptions        + ' /Fo"%2"'
-    .LibrarianOptions       = '/NODEFAULTLIB /WX /NOLOGO /OUT:"%2" "%1"'
-    .LinkerOptions          = '/NODEFAULTLIB /WX /NOLOGO /INCREMENTAL:NO /OUT:"%2" "%1" /DEBUG'
+    .LibrarianOptions       = '/WX /NOLOGO /OUT:"%2" "%1"'
+    .LinkerOptions          = '/WX /NOLOGO /INCREMENTAL:NO /OUT:"%2" "%1" /DEBUG'
 
     // Optimizations
     .CompilerDebugOptimizations     = ' /MTd /Od /RTC1 /GS /Oy- /GR- /analyze'
@@ -128,6 +128,7 @@ Compiler( 'Compiler-x64-OSX' )
                             + ' /I"$VSBasePath$/VC/include/"'
                             + ' /I"$WindowsSDKBasePath$/include/um"'
                             + ' /I"$WindowsSDKBasePath$/include/shared"'
+							+ ' /I"$Windows10SDKPath$/include/$Windows10SDKVer$/ucrt"'
     .CompilerOptions        + .BaseIncludePaths
     .PCHOptions             + .BaseIncludePaths
 
@@ -151,7 +152,7 @@ Compiler( 'Compiler-x64-OSX' )
                             + ' /DWIN32'
     .LinkerOptions          + ' /MACHINE:X86'
     .Platform               = 'x86'
-    .LinkerOptions          + ' /LIBPATH:"$WindowsLibPaths$/x86" /LIBPATH:"$VSBasePath$/VC/lib"'
+    .LinkerOptions          + ' /LIBPATH:"$WindowsLibPaths$/x86" /LIBPATH:"$VSBasePath$/VC/lib" /LIBPATH:"$Windows10SDKPath$/lib/$Windows10SDKVer$/ucrt/x86"'
 ]
 .X86DebugConfig =
 [
@@ -205,7 +206,7 @@ Compiler( 'Compiler-x64-OSX' )
     .PCHOptions             + ' /DWIN64'
     .LinkerOptions          + ' /MACHINE:X64'
     .Platform               = 'x64'
-    .LinkerOptions          + ' /LIBPATH:"$WindowsLibPaths$/x64" /LIBPATH:"$VSBasePath$/VC/lib/amd64"'
+    .LinkerOptions          + ' /LIBPATH:"$WindowsLibPaths$/x64" /LIBPATH:"$VSBasePath$/VC/lib/amd64" /LIBPATH:"$Windows10SDKPath$/lib/$Windows10SDKVer$/ucrt/x64"'
 ]
 .X64DebugConfig =
 [
